@@ -19,6 +19,14 @@ const testSchema = new Schema({
     name : {
         type : String,
         required : true
+    },
+    learningStyle : {
+        type : Array,
+        required : true
+    },
+    personality : {
+        type : Array,
+        required : true
     }
 });
 

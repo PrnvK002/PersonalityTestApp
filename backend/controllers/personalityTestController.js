@@ -44,13 +44,51 @@ export const submitTest = asyncHandler(async (req,res) => {
 
     console.log(req.body);
 
+    const answers = req.body.answer.filter((element) => {
+        return { answer : element.answer , questionId : element.question._id };
+    });
+
+    const personality = answers.filter((element) => {
+        if(element.question.systemType === 'PersonalityType' ){
+            if(element.answer === 'stronglyAgree' ){
+                return { value : 100 , type : element.question.type }
+            }else if(element.answer === 'agree' ){
+                return { value : 75 , type : element.question.type }
+            }else if(element.answer === 'neitherAgreeNotDisagree' ){
+                return { value : 50 , type : element.question.type }
+            }else if(element.answer === 'disagree'){
+                return { value : 25 , type : element.question.type }
+            }else if( element.answer === 'stronglyDisagree' ){
+                return { value : 0 , type : element.question.type }
+            }
+        }
+    });
+
+    const learningStyle = answers.filter((element) => {
+        if(element.question.systemType === 'LearningStyle' ){
+            if(element.answer === 'stronglyAgree' ){
+                return { value : 100 , type : element.question.type }
+            }else if(element.answer === 'agree' ){
+                return { value : 75 , type : element.question.type }
+            }else if(element.answer === 'neitherAgreeNotDisagree' ){
+                return { value : 50 , type : element.question.type }
+            }else if(element.answer === 'disagree'){
+                return { value : 25 , type : element.question.type }
+            }else if( element.answer === 'stronglyDisagree' ){
+                return { value : 0 , type : element.question.type }
+            }
+        }
+    })
+
     const insert = await Test.create({
         name : req.body.name,
-        answers : req.body.answers
+        answers:answers,
+        personality,
+        learningStyle
     });
 
     if(insert){
-        res.status(200).json({ messsage : "Succesfully submitted the test" });
+        res.status(200).json({ personalityTest , learningStyle });
     }
     res.status(500);
     throw new Error('Something went wrong while submitting test');
